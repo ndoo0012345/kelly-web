@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Custom smooth scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Metallic Text Shimmer Effect */
+@keyframes metallic-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.text-metallic {
+  background: linear-gradient(
+    110deg,
+    #b0b9c6 0%,
+    #e2e8f0 20%,
+    #ffffff 40%,
+    #cbd5e1 55%,
+    #f8fafc 70%,
+    #94a3b8 85%,
+    #e2e8f0 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: metallic-shimmer 4s linear infinite;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.text-metallic-gold {
+  background: linear-gradient(
+    110deg,
+    #d97706 0%,
+    #fde047 25%,
+    #ffffff 45%,
+    #fbbf24 60%,
+    #fef08a 75%,
+    #b45309 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: metallic-shimmer 4s linear infinite;
+}
+
+.text-metallic-chrome {
+  background: linear-gradient(
+    120deg,
+    #64748b 0%,
+    #94a3b8 15%,
+    #ffffff 35%,
+    #e2e8f0 50%,
+    #38bdf8 65%,
+    #ffffff 80%,
+    #64748b 100%
+  );
+  background-size: 250% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: metallic-shimmer 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes vinyl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-vinyl-spin {
+  animation: vinyl-spin 4s linear infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}

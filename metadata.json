@@ -1,0 +1,6 @@
+{
+  "name": "Personal Digital Workspace - Kelly Tham",
+  "description": "Personal digital workspace, academic task manager, color-coded weekly schedule, arcade mini games, and Spotify-themed vinyl turntable music player for Kelly Tham (Kelas 11 SMA Tata Boga).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
