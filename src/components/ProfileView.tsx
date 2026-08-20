@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   User, 
   ChefHat, 
@@ -20,18 +20,24 @@ import {
   Lock,
   Edit3,
   Flame,
-  ShieldCheck
+  ShieldCheck,
+  Camera,
+  Upload,
+  RotateCcw
 } from 'lucide-react';
 import { ProfileData } from '../types';
-import { loadProfileData, saveProfileData } from '../data/profile';
+import { useProfile } from '../context/ProfileContext';
 import { PinSecurityModal } from './PinSecurityModal';
 import { ProfileEditModal } from './ProfileEditModal';
 
 export const ProfileView: React.FC = () => {
-  const [profile, setProfile] = useState<ProfileData>(() => loadProfileData());
+  const { profile, updateProfile, uploadAvatar, removeAvatar } = useProfile();
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -39,13 +45,46 @@ export const ProfileView: React.FC = () => {
     setTimeout(() => setCopiedItem(null), 2000);
   };
 
+  const handleDirectAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        await uploadAvatar(file);
+        setStatusMessage('Foto profil baru berhasil diunggah dan disimpan!');
+        setTimeout(() => setStatusMessage(null), 3000);
+      } catch (err: any) {
+        alert('Gagal mengunggah foto profil: ' + err.message);
+      }
+    }
+  };
+
   const handleSaveProfile = (updated: ProfileData) => {
-    setProfile(updated);
-    saveProfileData(updated);
+    updateProfile(updated);
+    setStatusMessage('Data profil berhasil diperbarui!');
+    setTimeout(() => setStatusMessage(null), 3000);
   };
 
   return (
     <div id="profile-view-container" className="space-y-8 animate-fade-in pb-16">
+      {/* Hidden File Input for Direct Avatar Upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleDirectAvatarUpload}
+        className="hidden"
+      />
+
+      {/* Status Alert Banner */}
+      {statusMessage && (
+        <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 text-xs sm:text-sm font-bold flex items-center justify-between animate-fade-in shadow-md">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span>{statusMessage}</span>
+          </div>
+        </div>
+      )}
+
       {/* PIN Security Modal & Edit Profile Modal */}
       <PinSecurityModal
         isOpen={isPinModalOpen}
@@ -71,8 +110,18 @@ export const ProfileView: React.FC = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-yellow-300/20 rounded-full blur-2xl pointer-events-none" />
         
-        {/* Floating Edit Button with PIN Indicator */}
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+        {/* Floating Action Buttons */}
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2">
+          <button
+            id="quick-upload-avatar-btn"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/20 hover:bg-white text-white hover:text-slate-900 font-heading font-black text-xs backdrop-blur-md border border-white/30 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
+            title="Upload atau ganti foto profil sekarang"
+          >
+            <Camera className="w-3.5 h-3.5 text-yellow-300 group-hover:text-violet-600 transition-colors" />
+            <span>{profile.avatarUrl ? 'Ganti Foto' : 'Upload Foto'}</span>
+          </button>
+
           <button
             id="edit-profile-btn"
             onClick={() => setIsPinModalOpen(true)}
@@ -86,29 +135,50 @@ export const ProfileView: React.FC = () => {
         <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8">
           {/* Avatar Lingkaran / Circular Profile Picture with Glowing Ring */}
           <div className="relative group flex-shrink-0">
-            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-yellow-300 via-pink-400 to-cyan-300 p-1.5 shadow-2xl ring-4 ring-white/40">
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-yellow-300 via-pink-400 to-cyan-300 p-1.5 shadow-2xl ring-4 ring-white/40 cursor-pointer transition-transform duration-300 group-hover:scale-105"
+              title="Klik untuk mengunggah atau mengganti foto profil"
+            >
               {profile.avatarUrl ? (
-                <img
-                  src={profile.avatarUrl}
-                  alt={profile.name}
-                  className="w-full h-full rounded-full object-cover border-2 border-white"
-                />
+                <div className="w-full h-full rounded-full overflow-hidden border-2 border-white relative">
+                  <img
+                    src={profile.avatarUrl}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Hover Camera Overlay */}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity text-xs font-bold gap-1">
+                    <Camera className="w-6 h-6 text-yellow-300" />
+                    <span>Ganti Foto</span>
+                  </div>
+                </div>
               ) : (
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex flex-col items-center justify-center text-white border-2 border-white/20">
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 flex flex-col items-center justify-center text-white border-2 border-white/20 relative">
                   <span className="font-heading font-black text-4xl sm:text-5xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-pink-200 to-white">
                     KT
                   </span>
                   <span className="text-[10px] text-pink-300 font-black tracking-widest uppercase mt-0.5">
                     {profile.nickname || 'Kelly'}
                   </span>
+                  {/* Hover Camera Overlay for Monogram */}
+                  <div className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity text-xs font-bold gap-1">
+                    <Upload className="w-6 h-6 text-yellow-300" />
+                    <span>Upload Foto</span>
+                  </div>
                 </div>
               )}
             </div>
-            {/* Status Pill Badge */}
-            <div className="absolute bottom-1 right-2 px-3 py-1 rounded-full bg-emerald-500 text-white text-[11px] font-black shadow-lg flex items-center gap-1.5 border-2 border-white">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-              <span>Aktif</span>
-            </div>
+
+            {/* Quick Camera Action Badge */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-1 right-2 p-2 rounded-full bg-violet-600 hover:bg-violet-700 text-white shadow-lg border-2 border-white transition-transform hover:scale-110 cursor-pointer"
+              title="Upload Foto Profil"
+            >
+              <Camera className="w-4 h-4 text-yellow-300" />
+            </button>
           </div>
 
           {/* Profile Basic Info & Metallic Text Shimmer */}
@@ -124,6 +194,20 @@ export const ProfileView: React.FC = () => {
               <span className="px-3.5 py-1 rounded-full bg-white/15 text-white/90 text-xs font-bold backdrop-blur-md border border-white/20">
                 🏫 {profile.school}
               </span>
+              {profile.avatarUrl && (
+                <button
+                  onClick={() => {
+                    removeAvatar();
+                    setStatusMessage('Foto profil dikembalikan ke monogram inisial KT.');
+                    setTimeout(() => setStatusMessage(null), 2500);
+                  }}
+                  className="px-3 py-1 rounded-full bg-white/10 hover:bg-red-500/80 text-white text-xs font-bold backdrop-blur-md border border-white/20 flex items-center gap-1 transition-colors cursor-pointer"
+                  title="Hapus foto dan gunakan inisial KT"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Reset ke KT</span>
+                </button>
+              )}
             </div>
 
             {/* Profile Name with Metallic Shimmer Effect */}

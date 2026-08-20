@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   X, 
   User, 
@@ -33,6 +33,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [formData, setFormData] = useState<ProfileData>(profile);
   const [avatarPreview, setAvatarPreview] = useState<string>(profile.avatarUrl || '');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(profile);
+      setAvatarPreview(profile.avatarUrl || '');
+    }
+  }, [isOpen, profile]);
 
   if (!isOpen) return null;
 

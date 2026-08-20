@@ -19,10 +19,13 @@ import {
   FileCode,
   Layers,
   ChevronRight,
-  Eye
+  Eye,
+  Camera,
+  Upload
 } from 'lucide-react';
 import { TaskItem, NavigationTab, TaskStatus } from '../types';
 import { useMusic } from '../music/music-state';
+import { useProfile } from '../context/ProfileContext';
 import { formatDuration } from '../music/music-utils';
 import { Visualizer } from './Visualizer';
 import { getCurrentScheduleStatus, CurrentScheduleStatus } from '../data/schedule';
@@ -40,6 +43,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   tasks
 }) => {
   const { currentTrack, isPlaying, togglePlayPause, library, playTrack, customVinylImage } = useMusic();
+  const { profile } = useProfile();
 
   // Schedule Real-time state
   const [scheduleStatus, setScheduleStatus] = useState<CurrentScheduleStatus>(() => getCurrentScheduleStatus());
@@ -129,21 +133,43 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Right Circular Avatar Monogram */}
+          {/* Right Circular Avatar (Shows Uploaded Profile Photo with KT Monogram Fallback) */}
           <div className="w-full lg:w-auto flex justify-center lg:justify-end">
-            <div className="relative group cursor-pointer" onClick={() => onNavigate('profile')}>
+            <div 
+              className="relative group cursor-pointer" 
+              onClick={() => onNavigate('profile')}
+              title="Buka Halaman Profil untuk Edit Data & Foto"
+            >
               <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-gradient-to-tr from-yellow-300 via-pink-400 to-cyan-300 p-1.5 shadow-2xl transition-transform duration-300 group-hover:scale-105">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 flex flex-col items-center justify-center text-center p-3 border-2 border-white/20">
-                  <div className="font-heading font-black text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-pink-200 to-white text-metallic">
-                    KT
+                {profile.avatarUrl ? (
+                  <div className="w-full h-full rounded-full overflow-hidden border-2 border-white relative shadow-inner">
+                    <img
+                      src={profile.avatarUrl}
+                      alt={profile.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity text-xs font-bold gap-1">
+                      <Camera className="w-5 h-5 text-yellow-300" />
+                      <span>Edit Profil</span>
+                    </div>
                   </div>
-                  <div className="mt-1 font-black text-xs text-white">
-                    Kelly Tham
+                ) : (
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 flex flex-col items-center justify-center text-center p-3 border-2 border-white/20 relative group-hover:bg-slate-900/90 transition-colors">
+                    <div className="font-heading font-black text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-pink-200 to-white text-metallic">
+                      KT
+                    </div>
+                    <div className="mt-1 font-black text-xs text-white">
+                      {profile.name || 'Kelly Tham'}
+                    </div>
+                    <div className="text-[10px] text-pink-300 font-bold uppercase tracking-wider">
+                      {profile.major || 'Tata Boga XI.3'}
+                    </div>
+                    <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity text-xs font-bold gap-1">
+                      <Camera className="w-5 h-5 text-yellow-300" />
+                      <span>Upload Foto</span>
+                    </div>
                   </div>
-                  <div className="text-[10px] text-pink-300 font-bold uppercase tracking-wider">
-                    Tata Boga XI.3
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

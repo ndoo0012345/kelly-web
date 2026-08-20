@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MusicProvider } from './music/music-state';
+import { ProfileProvider } from './context/ProfileContext';
 import { Navbar } from './components/Navbar';
 import { GlobalMusicBar } from './components/GlobalMusicBar';
 import { DashboardView } from './components/DashboardView';
@@ -13,7 +14,7 @@ import { TaskModal } from './components/TaskModal';
 import { TaskDetailModal } from './components/TaskDetailModal';
 import { NavigationTab, TaskItem, TaskStatus, TaskSubject } from './types';
 import { loadTasks, saveTasks } from './data/tasks';
-import { profileData } from './data/profile';
+import { useProfile } from './context/ProfileContext';
 import { runMigrationIfNeeded } from './utils/migration';
 import { Instagram, Phone, Mail, Sparkles, Heart } from 'lucide-react';
 
@@ -38,6 +39,7 @@ function getInitialTab(): NavigationTab {
 }
 
 export const AppContent: React.FC = () => {
+  const { profile } = useProfile();
   const [currentTab, setCurrentTab] = useState<NavigationTab>(getInitialTab);
   const [tasks, setTasks] = useState<TaskItem[]>(() => loadTasks());
   
@@ -203,44 +205,44 @@ export const AppContent: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-3">
               {/* Instagram */}
               <a
-                href={`https://instagram.com/${profileData.contact.instagram.replace('@', '')}`}
+                href={`https://instagram.com/${profile.contact.instagram.replace('@', '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200/80 font-bold transition-all hover:scale-105 cursor-pointer"
               >
                 <Instagram className="w-3.5 h-3.5" />
-                <span>{profileData.contact.instagram}</span>
+                <span>{profile.contact.instagram}</span>
               </a>
 
               {/* TikTok */}
               <a
-                href={`https://tiktok.com/@${profileData.contact.tiktok.replace('@', '')}`}
+                href={`https://tiktok.com/@${profile.contact.tiktok.replace('@', '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold transition-all hover:scale-105 shadow-xs cursor-pointer"
               >
                 <span className="text-cyan-400 font-black text-xs">🎵</span>
-                <span>{profileData.contact.tiktok}</span>
+                <span>{profile.contact.tiktok}</span>
               </a>
 
               {/* WhatsApp */}
               <a
-                href={`https://wa.me/62${profileData.contact.whatsapp.startsWith('0') ? profileData.contact.whatsapp.slice(1) : profileData.contact.whatsapp}`}
+                href={`https://wa.me/62${profile.contact.whatsapp.startsWith('0') ? profile.contact.whatsapp.slice(1) : profile.contact.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 font-bold transition-all hover:scale-105 cursor-pointer"
               >
                 <Phone className="w-3.5 h-3.5" />
-                <span>{profileData.contact.whatsapp}</span>
+                <span>{profile.contact.whatsapp}</span>
               </a>
 
               {/* Email */}
               <a
-                href={`mailto:${profileData.contact.email}`}
+                href={`mailto:${profile.contact.email}`}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200/80 font-bold transition-all hover:scale-105 cursor-pointer"
               >
                 <Mail className="w-3.5 h-3.5" />
-                <span>{profileData.contact.email}</span>
+                <span>{profile.contact.email}</span>
               </a>
             </div>
           </div>
@@ -291,8 +293,10 @@ export const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <MusicProvider>
-      <AppContent />
-    </MusicProvider>
+    <ProfileProvider>
+      <MusicProvider>
+        <AppContent />
+      </MusicProvider>
+    </ProfileProvider>
   );
 }

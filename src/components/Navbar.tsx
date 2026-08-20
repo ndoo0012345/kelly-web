@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { NavigationTab } from '../types';
 import { useMusic } from '../music/music-state';
+import { useProfile } from '../context/ProfileContext';
 
 interface NavbarProps {
   currentTab?: NavigationTab;
@@ -30,6 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isPlaying, currentTrack } = useMusic();
+  const { profile } = useProfile();
 
   const selected = activeTab || currentTab || 'dashboard';
 
@@ -38,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'profile', label: 'Profil', icon: User, color: 'text-pink-600 bg-pink-50 border-pink-200' },
     { id: 'informatika', label: 'Informatika', icon: Code2, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
     { id: 'bindo', label: 'Bahasa Indonesia', icon: BookOpen, color: 'text-orange-600 bg-orange-50 border-orange-200' },
-    { id: 'schedule', label: 'Jadwal', icon: CalendarDays, color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
+    { id: 'schedule', label: 'Schedule', icon: CalendarDays, color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
     { id: 'games', label: 'Arcade', icon: Gamepad2, color: 'text-violet-600 bg-violet-50 border-violet-200' },
     { id: 'music', label: 'Music Studio', icon: Music, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   ];
@@ -64,20 +66,28 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavClick('dashboard')}
             className="flex items-center gap-3 group text-left focus:outline-none rounded-2xl px-2 py-1 -ml-2 cursor-pointer"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-violet-600 via-pink-500 to-amber-400 p-[2px] shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform duration-300">
-              <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-heading font-extrabold text-sm text-violet-700">
-                KT
-              </div>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-violet-600 via-pink-500 to-amber-400 p-[2px] shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform duration-300 overflow-hidden flex-shrink-0">
+              {profile.avatarUrl ? (
+                <img
+                  src={profile.avatarUrl}
+                  alt={profile.name}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full rounded-full bg-white flex items-center justify-center font-heading font-extrabold text-sm text-violet-700">
+                  KT
+                </div>
+              )}
             </div>
             <div>
               <div className="font-heading font-extrabold text-base text-slate-900 tracking-tight flex items-center gap-1.5 group-hover:text-violet-600 transition-colors">
-                <span>Kelly Tham</span>
+                <span>{profile.name || 'Kelly Tham'}</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 font-bold border border-violet-200">
-                  XI.3
+                  {profile.grade?.replace('Kelas ', '') || 'XI.3'}
                 </span>
               </div>
               <div className="text-xs text-slate-500 font-medium">
-                SMA Cinta Kasih Tzu Chi
+                {profile.school || 'SMA Cinta Kasih Tzu Chi'}
               </div>
             </div>
           </button>
