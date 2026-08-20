@@ -23,6 +23,8 @@ export interface MusicContextType {
   customVinylImage: string | null;
   setCustomVinylImage: (url: string | null) => void;
   uploadVinylImage: (file: File) => Promise<string>;
+  uploadTrackCover: (trackId: string, file: File) => Promise<string>;
+  updateTrackCover: (trackId: string, coverUrl: string) => Promise<void>;
   resetVinylImage: () => void;
   refreshLibrary: () => Promise<void>;
   playTrack: (track: MusicTrack, newQueue?: MusicTrack[], startAtSeconds?: number) => Promise<void>;
@@ -88,6 +90,37 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       reader.onerror = () => reject(new Error('Error reading image file'));
       reader.readAsDataURL(file);
     });
+  };
+
+  const uploadTrackCover = async (trackId: string, file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const result = e.target?.result as string;
+        if (result) {
+          await updateTrackCover(trackId, result);
+          resolve(result);
+        } else {
+          reject(new Error('Failed to read image file'));
+        }
+      };
+      reader.onerror = () => reject(new Error('Error reading image file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const updateTrackCover = async (trackId: string, coverUrl: string): Promise<void> => {
+    const track = library.find((t) => t.id === trackId);
+    if (!track) return;
+    const updated = { ...track, cover: coverUrl, updatedAt: Date.now() };
+    await musicDB.addTrack(updated);
+    await refreshLibrary();
+    if (playerState.currentTrack?.id === trackId) {
+      setPlayerState((prev) => ({
+        ...prev,
+        currentTrack: { ...updated }
+      }));
+    }
   };
 
   const resetVinylImage = () => {
@@ -257,6 +290,8 @@ export const MusicProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     customVinylImage,
     setCustomVinylImage,
     uploadVinylImage,
+    uploadTrackCover,
+    updateTrackCover,
     resetVinylImage,
     refreshLibrary,
     playTrack,

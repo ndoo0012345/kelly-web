@@ -67,7 +67,7 @@ export const PinSecurityModal: React.FC<PinSecurityModalProps> = ({
       }, 500);
     } else {
       setError(true);
-      setErrorMessage('PIN salah! Silakan masukkan PIN yang benar (1309).');
+      setErrorMessage('PIN salah! Silakan masukkan 4-digit PIN keamanan.');
       setTimeout(() => {
         setPin('');
         setError(false);
@@ -188,15 +188,12 @@ export const PinSecurityModal: React.FC<PinSecurityModalProps> = ({
           </button>
         </div>
 
-        {/* Default PIN Hint & Close */}
-        <div className="pt-2 w-full flex items-center justify-between text-xs text-slate-400">
-          <span className="text-[11px] font-mono text-slate-500">
-            PIN: <strong className="text-violet-600 font-bold">1309</strong>
-          </span>
+        {/* Cancel Button */}
+        <div className="pt-2 w-full flex items-center justify-center">
           <button
             type="button"
             onClick={onClose}
-            className="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+            className="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer px-4 py-1.5 rounded-full hover:bg-slate-100"
           >
             Batal
           </button>

@@ -79,7 +79,7 @@ export const ProfileView: React.FC = () => {
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 hover:bg-white text-white hover:text-slate-900 font-heading font-black text-xs backdrop-blur-md border border-white/30 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
           >
             <Lock className="w-3.5 h-3.5 text-amber-300 group-hover:text-violet-600 transition-colors" />
-            <span>Edit Profil (PIN 1309)</span>
+            <span>Edit Profil</span>
           </button>
         </div>
 

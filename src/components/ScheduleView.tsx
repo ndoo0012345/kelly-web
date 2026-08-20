@@ -47,7 +47,7 @@ export const ScheduleView: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold backdrop-blur-md border border-white/30 flex items-center gap-1.5">
                 <CalendarDays className="w-3.5 h-3.5" />
-                <span>Jadwal Pelajaran Kelas XI.3</span>
+                <span>Schedule Pelajaran Kelas XI.3</span>
               </span>
               <span className="px-3 py-1 rounded-full bg-black/20 text-cyan-200 text-xs font-semibold backdrop-blur-md border border-white/10">
                 SMA Cinta Kasih Tzu Chi
@@ -55,7 +55,7 @@ export const ScheduleView: React.FC = () => {
             </div>
 
             <h1 className="font-heading font-black text-3xl sm:text-4xl text-white tracking-tight">
-              Jadwal Belajar & Agenda Harian
+              Schedule Belajar & Agenda Harian
             </h1>
             <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-medium">
               Sistem pewarnaan dinamis per mata pelajaran untuk memudahkan memantau jam pelajaran, ruang lab, serta istirahat.
@@ -134,7 +134,7 @@ export const ScheduleView: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
             <h3 className="font-heading font-bold text-lg text-slate-900 flex items-center gap-2">
-              <span>Jadwal Hari {selectedDay}</span>
+              <span>Schedule Hari {selectedDay}</span>
               {selectedDay === todayKey && (
                 <span className="px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200">
                   Hari Ini
@@ -142,7 +142,7 @@ export const ScheduleView: React.FC = () => {
               )}
             </h3>
             <span className="text-xs text-slate-500 font-semibold">
-              {daySchedule.length} Sesi Terjadwal
+              {daySchedule.length} Sesi Schedule
             </span>
           </div>
 

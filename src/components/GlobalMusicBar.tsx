@@ -59,7 +59,7 @@ export const GlobalMusicBar: React.FC<GlobalMusicBarProps> = ({ onNavigateToMusi
   }
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const vinylCenterImage = customVinylImage || currentTrack.cover;
+  const vinylCenterImage = currentTrack.cover || customVinylImage;
 
   return (
     <>

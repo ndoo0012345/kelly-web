@@ -57,7 +57,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const pendingCount = tasks.filter((t) => t.status === 'Belum Dikerjakan').length;
   const upcomingTasks = tasks.slice(0, 4);
 
-  const vinylCenterImage = customVinylImage || currentTrack?.cover || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=80';
+  const vinylCenterImage = currentTrack?.cover || customVinylImage || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop&q=80';
 
   return (
     <div id="dashboard-view-container" className="space-y-8 animate-fade-in pb-12">
@@ -186,7 +186,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </p>
         </button>
 
-        {/* Jadwal Pelajaran */}
+        {/* Schedule Pelajaran */}
         <button
           id="card-schedule-link"
           onClick={() => onNavigate('schedule')}
@@ -196,7 +196,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <Calendar className="w-6 h-6" />
           </div>
           <h3 className="font-heading font-black text-sm text-slate-900 group-hover:text-indigo-600 transition-colors">
-            Jadwal XI.3
+            Schedule XI.3
           </h3>
           <p className="text-xs text-slate-500 mt-1 font-medium">
             Live Tracker & Warna Mapel
@@ -236,7 +236,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </span>
                 <div>
                   <h3 className="font-heading font-black text-base text-slate-900">
-                    Status Jadwal Kelas XI.3 Hari Ini
+                    Status Schedule Kelas XI.3 Hari Ini
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">
                     {scheduleStatus.dayName} · Pembaruan waktu otomatis
@@ -248,7 +248,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 onClick={() => onNavigate('schedule')}
                 className="px-3.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer"
               >
-                Lihat Semua Jadwal →
+                Lihat Semua Schedule →
               </button>
             </div>
 
